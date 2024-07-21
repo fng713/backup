@@ -235,7 +235,7 @@ rm -rf /root/ac-backup-${xmh}.zip
 
 # Create new zip file with the backup
 $ZIP || { echo "Error creating zip file"; exit 1; }
-NAME = ac-backup-${xmh}.zip
+NAME = "ac-backup-${xmh}.zip"
 
 # Add comment to zip file
 echo -e "$COMMENT" | zip -z /root/ac-backup-${xmh}.zip 
