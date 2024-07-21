@@ -1,34 +1,58 @@
 #!/bin/bash
 
-# Bot token
-# گرفتن توکن ربات از کاربر و ذخیره آن در متغیر tk
-while [[ -z "$tk" ]]; do
-    echo "Bot token: "
-    read -r tk
-    if [[ $tk == $'\0' ]]; then
-        echo "Invalid input. Token cannot be empty."
-        unset tk
-    fi
+# Function to check if a variable is a number
+is_number() {
+  [[ $1 =~ ^[0-9]+$ ]]
+}
+
+# Prompt for FTP details with validation
+while true; do
+  read -p "Enter FTP host: " FTP_HOST
+  if [ -n "$FTP_HOST" ]; then
+    break
+  else
+    echo "FTP host cannot be empty. Please enter a valid FTP host."
+  fi
 done
 
-# Chat id
-# گرفتن Chat ID از کاربر و ذخیره آن در متغیر chatid
-while [[ -z "$chatid" ]]; do
-    echo "Chat id: "
-    read -r chatid
-    if [[ $chatid == $'\0' ]]; then
-        echo "Invalid input. Chat id cannot be empty."
-        unset chatid
-    elif [[ ! $chatid =~ ^\-?[0-9]+$ ]]; then
-        echo "${chatid} is not a number."
-        unset chatid
-    fi
+while true; do
+  read -p "Enter FTP username: " FTP_USER
+  if [ -n "$FTP_USER" ]; then
+    break
+  else
+    echo "FTP username cannot be empty. Please enter a valid FTP username."
+  fi
 done
 
-# Caption
-# گرفتن عنوان برای فایل پشتیبان و ذخیره آن در متغیر caption
-echo "Caption (for example, your domain, to identify the database file more easily): "
-read -r caption
+while true; do
+  read -sp "Enter FTP password: " FTP_PASS
+  echo
+  if [ -n "$FTP_PASS" ]; then
+    break
+  else
+    echo "FTP password cannot be empty. Please enter a valid FTP password."
+  fi
+done
+
+while true; do
+  read -p "Enter FTP port (default 21): " FTP_PORT
+  FTP_PORT=${FTP_PORT:-21}
+  if is_number "$FTP_PORT"; then
+    break
+  else
+    echo "FTP port must be a number. Please enter a valid port."
+  fi
+done
+
+while true; do
+  read -p "Enter FTP path (e.g., /path/to/ftp/backup/): " FTP_PATH
+  if [ -n "$FTP_PATH" ]; then
+    break
+  else
+    echo "FTP path cannot be empty. Please enter a valid FTP path."
+  fi
+done
+
 
 # Cronjob
 # تعیین زمانی برای اجرای این اسکریپت به صورت دوره‌ای
@@ -135,7 +159,6 @@ EOF
       ZIP="zip -r /root/ac-backup-m.zip ${dir}/* /var/lib/marzban/* /opt/marzban/.env"
 fi
 
-ACLover="marzban backup"
 
 # x-ui backup
 # ساخت فایل پشتیبانی برای نرم‌افزار X-UI و ذخیره آن در فایل ac-backup.zip
@@ -159,7 +182,6 @@ else
 fi
 
 ZIP="zip /root/ac-backup-x.zip ${dbDir}/x-ui.db ${configDir}/config.json"
-ACLover="x-ui backup"
 
 # hiddify backup
 # ساخت فایل پشتیبانی برای نرم‌افزار Hiddify و ذخیره آن در فایل ac-backup.zip
@@ -183,7 +205,6 @@ zip /root/ac-backup-h.zip /opt/hiddify-manager/hiddify-panel/backup/\$latest_fil
 
 EOF
 )
-ACLover="hiddify backup"
 else
 echo "Please choose m or x or h only !"
 exit 1
@@ -201,24 +222,32 @@ trim() {
 }
 
 IP=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
-caption="${caption}\n\n${ACLover}\n<code>${IP}</code>\nCreated by @AC_Lover - https://github.com/AC-Lover/backup"
-comment=$(echo -e "$caption" | sed 's/<code>//g;s/<\/code>//g')
-comment=$(trim "$comment")
 
 # install zip
-# نصب پکیج zip
 sudo apt install zip -y
 
-# send backup to telegram
-# ارسال فایل پشتیبانی به تلگرام
+# Define variables for backup
+
+COMMENT="Backup created on $(date +'%Y-%m-%d_%H-%M-%S') for ${IP}"
+
+# Zip the backup file
+# Upload the zip file to FTP server
 cat > "/root/ac-backup-${xmh}.sh" <<EOL
 rm -rf /root/ac-backup-${xmh}.zip
 $ZIP
-echo -e "$comment" | zip -z /root/ac-backup-${xmh}.zip
-curl -F chat_id="${chatid}" -F caption=\$'${caption}' -F parse_mode="HTML" -F document=@"/root/ac-backup-${xmh}.zip" https://api.telegram.org/bot${tk}/sendDocument
+echo -e "$COMMENT" | zip -z /root/ac-backup-${xmh}.zip
+
+ftp -inv $FTP_HOST $FTP_PORT 
+user $FTP_USER $FTP_PASS
+cd $FTP_PATH
+put "$ZIP"
+bye
 EOL
 
+# Optional: Remove the local backup file after uploading
+rm "$ZIP"
 
+ 
 # Add cronjob
 # افزودن کرانجاب جدید برای اجرای دوره‌ای این اسکریپت
 { crontab -l -u root; echo "${cron_time} /bin/bash /root/ac-backup-${xmh}.sh >/dev/null 2>&1"; } | crontab -u root -
@@ -229,4 +258,4 @@ bash "/root/ac-backup-${xmh}.sh"
 
 # Done
 # پایان اجرای اسکریپت
-echo -e "\nDone\n"
+echo -e "\nBackup created, uploaded to FTP successfully!\n"
