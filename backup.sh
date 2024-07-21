@@ -233,15 +233,24 @@ COMMENT="Backup created on $(date +'%Y-%m-%d_%H-%M-%S') for ${IP}"
 # Zip the backup file
 # Upload the zip file to FTP server
 cat > "/root/ac-backup-${xmh}.sh" <<EOL
-rm -rf /root/ac-backup-${xmh}.zip
-$ZIP
-echo -e "$COMMENT" | zip -z /root/ac-backup-${xmh}.zip
+#!/bin/bash
 
-ftp -inv $FTP_HOST $FTP_PORT 
+# Remove old backup zip file
+rm -rf /root/ac-backup-${xmh}.zip
+
+# Create new zip file with the backup
+$ZIP || { echo "Error creating zip file"; exit 1; }
+
+# Add comment to zip file
+echo -e "$COMMENT" | zip -z /root/ac-backup-${xmh}.zip || { echo "Error adding comment to zip file"; exit 1; }
+
+# Upload the zip file to FTP server
+ftp -inv $FTP_HOST $FTP_PORT <<FTP
 user $FTP_USER $FTP_PASS
-cd $FTP_PATH
-put "$ZIP"
+cd $FTP_PATH || { echo "Error changing directory on FTP server"; exit 1; }
+put /root/ac-backup-${xmh}.zip || { echo "Error uploading file to FTP server"; exit 1; }
 bye
+FTP
 EOL
 
 # Optional: Remove the local backup file after uploading
