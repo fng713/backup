@@ -223,31 +223,22 @@ trim() {
 
 IP=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
 
+COMMENT="Backup created on $(date +'%Y-%m-%d_%H-%M-%S') for server with ${IP} address"
+comment=$(trim "$comment")
+
 # install zip
 sudo apt install zip -y
 
-# Define variables for backup
-
-COMMENT="Backup created on $(date +'%Y-%m-%d_%H-%M-%S') for ${IP}"
-
-# Remove old backup zip file
+# send backup to ftp server
+cat > "/root/backup-${xmh}.sh" <<EOL
 rm -rf /root/backup-${xmh}.zip
-
-# Create new zip file with the backup
-$ZIP || { echo "Error creating zip file"; exit 1; }
-
-# Add comment to zip file
-echo -e "$COMMENT" | zip -z /root/backup-${xmh}.zip 
-
-# Upload the zip file to FTP server
-if [ -r $ZIP ]
-# File seems to exist and is readable
-then
-ftp open $FTP_HOST <<EOL
+$ZIP
+echo -e "$comment" | zip -z /root/backup-${xmh}.zip
+ftp open $FTP_HOST 
 quote USER $FTP_USER
 quote PASS $FTP_PASS
 cd $FTP_PATH
-put $ZIP
+put backup-${xmh}.zip
 EOL
 
  
