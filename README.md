@@ -14,16 +14,15 @@
 
 ###
 
-<p align="left">First you need to create a FTP account on your host</p> 
+<p align="left">First you need to create a FTP account on your host and then run this command on your server</p> 
 
-<p align="left">First, you run this command on your server<br><br></p> 
 
 ```bash
 bash <(curl -Ls https://raw.githubusercontent.com/fng713/backup/main/backup.sh)
 ```
 ###
 
-<p align="left">then simply enter your FTP host, username, password, port(if it is default port 21 enter to skip) and path (you must create the path on your server or just enter / to send backup to your FTP acount root path).</p>
+<p align="left">next simply enter your FTP host, username, password, port(if it is default port 21 enter to skip) and path (you must create the path on your server or just enter / to send backup to your FTP acount root path) for cronjob setting and panel selection follow the below instructions.</p>
 
 ###
 <h3 align="left"> Cronjob setting</h3>
