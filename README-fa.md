@@ -85,3 +85,10 @@ bash <(curl -Ls https://raw.githubusercontent.com/fng713/backup/main/backup.sh)
   اگر می‌خواهید پاک شود، y را وارد کنید و در غیر این صورت n را وارد کنید.
 </p>
 
+<h1 align="right">حمایت از ما</h1>
+
+###
+
+<p align="right">https://nowpayments.io/donation/FNG</p>
+
+###
