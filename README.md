@@ -2,6 +2,18 @@
 
 ###
 
+<p align="center">
+ <a href="./README.md">
+ English
+ </a>
+ /
+ <a href="./README-fa.md">
+ فارسی
+ </a>
+</p>
+
+###
+
 <p align="left">With this script, you can backup important information such as database from the x-ui, marzban, and hiddify panels and send it to FTP server so that it is always available!</p>
 <p align="left">
   this is a variant of <a href="https://github.com/AC-Lover/backup">Ac-backup</a> script for those who have a panel on iran servers and also have host accessible from iran which helps bypass accessibility limits of telegram bot.
