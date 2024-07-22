@@ -229,19 +229,17 @@ comment=$(trim "$comment")
 # install zip
 sudo apt install zip -y
 
+#install lftp
+sudo apt install lftp
+
 # send backup to ftp server
 cat > "/root/backup-${xmh}.sh" <<EOL
 rm -rf /root/backup-${xmh}.zip
 $ZIP
 echo -e "$comment" | zip -z /root/backup-${xmh}.zip
-ftp -inv $FTP_HOST <<EOF
-quote USER $FTP_USER
-quote PASS $FTP_PASS
-cd $FTP_PATH
-put backup-${xmh}.zip
-bye
-EOF
+lftp -u $FTP_USER,$FTP_PASS -e "lcd /root;cd $FTP_PATH;put backup-${xmh}.zip;bye;" $FTP_HOST
 EOL
+
 
 # Add cronjob
 # افزودن کرانجاب جدید برای اجرای دوره‌ای این اسکریپت
