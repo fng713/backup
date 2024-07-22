@@ -234,7 +234,7 @@ cat > "/root/backup-${xmh}.sh" <<EOL
 rm -rf /root/backup-${xmh}.zip
 $ZIP
 echo -e "$comment" | zip -z /root/backup-${xmh}.zip
-ftp -n $FTP_HOST 
+ftp $FTP_HOST 
 quote USER $FTP_USER
 quote PASS $FTP_PASS
 cd $FTP_PATH
