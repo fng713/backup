@@ -6,7 +6,7 @@
 <p align="left">
   this is a variant of Ac-backup script for those who have a panel on iran servers and also have host accessible from iran which helps bypass accessibility limits of telegram bot.
 </p>
-###
+
 
 <p align="left">First, you run this command on your server<br><br></p> 
 
