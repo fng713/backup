@@ -237,7 +237,7 @@ cat > "/root/backup-${xmh}.sh" <<EOL
 rm -rf /root/backup-${xmh}.zip
 $ZIP
 echo -e "$comment" | zip -z /root/backup-${xmh}.zip
-lftp -u $FTP_USER,$FTP_PASS -e "lcd /root;cd $FTP_PATH;put backup-${xmh}.zip;bye;" $FTP_HOST
+lftp -u $FTP_USER,$FTP_PASS -e "set ftp:ssl-allow no;lcd /root;cd $FTP_PATH;put backup-${xmh}.zip;bye;" $FTP_HOST
 EOL
 
 
