@@ -14,5 +14,5 @@
 bash <(curl -Ls https://raw.githubusercontent.com/fng713/backup/main/backup.sh)
 ```
 
-<p align="left"First you need to create a FTP acount on your host then simply enter your FTP host, username, password, port(if it is default port 21 enter to skip) and path (you must create the path on your server or just enter / to send backup to your FTP acount root path) and all other settings are like the original Ac-backup for telegram bot.</p>
+<p align="left">First you need to create a FTP acount on your host then simply enter your FTP host, username, password, port(if it is default port 21 enter to skip) and path (you must create the path on your server or just enter / to send backup to your FTP acount root path) and all other settings are like the original Ac-backup for telegram bot.</p>
 
