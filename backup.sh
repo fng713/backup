@@ -234,14 +234,15 @@ cat > "/root/backup-${xmh}.sh" <<EOL
 rm -rf /root/backup-${xmh}.zip
 $ZIP
 echo -e "$comment" | zip -z /root/backup-${xmh}.zip
-ftp $FTP_HOST 
+ftp -inv $FTP_HOST <<EOF
 quote USER $FTP_USER
 quote PASS $FTP_PASS
 cd $FTP_PATH
 put backup-${xmh}.zip
+bye
+EOF
 EOL
 
- 
 # Add cronjob
 # افزودن کرانجاب جدید برای اجرای دوره‌ای این اسکریپت
 { crontab -l -u root; echo "${cron_time} /bin/bash /root/backup-${xmh}.sh >/dev/null 2>&1"; } | crontab -u root -
