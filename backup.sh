@@ -235,7 +235,6 @@ rm -rf /root/ac-backup-${xmh}.zip
 
 # Create new zip file with the backup
 $ZIP || { echo "Error creating zip file"; exit 1; }
-NAME = "ac-backup-${xmh}.zip"
 
 # Add comment to zip file
 echo -e "$COMMENT" | zip -z /root/ac-backup-${xmh}.zip 
@@ -244,11 +243,11 @@ echo -e "$COMMENT" | zip -z /root/ac-backup-${xmh}.zip
 if [ -r $ZIP ]
 # File seems to exist and is readable
 then
-ftp -n $FTP_HOST <<EOL
+ftp open $FTP_HOST <<EOL
 quote USER $FTP_USER
 quote PASS $FTP_PASS
 cd $FTP_PATH
-put $ZIP $NAME
+put $ZIP
 EOL
 
  
