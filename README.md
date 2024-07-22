@@ -61,5 +61,12 @@ bash <(curl -Ls https://raw.githubusercontent.com/fng713/backup/main/backup.sh)
 <p align="left">Then it will ask you if you want to delete the previously defined cron jobs or not?<br>Enter y if you want it to be cleared otherwise enter n</p>
 
 
+###
 
+<h1 align="left">Donation</h1>
 
+###
+
+<p align="left">https://nowpayments.io/donation/FNG</p>
+
+###
